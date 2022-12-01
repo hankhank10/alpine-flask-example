@@ -15,6 +15,7 @@ def api():
     # For demonstration purposes we will have the server return a simulated failure 70% of the time
     pct_chance_of_simulated_failure = 70
     if random.randint(0, 100) < pct_chance_of_simulated_failure:
+        print ("Simulated failure")
         return jsonify({'success': False, 'message': 'Simulated failure'}), 500
 
     # Try to get the data from the request, and if successful print it to the console and return a success message
