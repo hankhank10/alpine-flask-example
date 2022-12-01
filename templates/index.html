@@ -55,7 +55,7 @@
                     ✅ Last data submit to server was successful
                 </span>
                 <span x-show="lastServerSubmitSuccessful === false" class="text-red-600">
-                    ❌ Last data submit to server was not successful, but don't worry all the data is still safe here - you can continue editing it and resubmit later
+                    ❌ Last data submit to server resulted in a simulated failure, but don't worry all the data is still safe here - you can continue editing it and resubmit later
                 </span>
 
             </p>
@@ -69,7 +69,7 @@
 <script>
     function myAlpineApp() {
         return {
-            dataArray: [],
+            dataArray: ['an example', 'array of', 'items'],
             newItem: '',
             lastServerSubmitSuccessful: null,
             submitDataToServer() {
