@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!-- Alpine -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Tailwind for some minimal formatting -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body>
+
+<div x-data="myAlpineApp()">
+    <div class="mt-8 ml-5 mr-5 ">
+
+        <!-- This is the list of items -->
+        <div>
+            <p class="text-xl border-b-2 mb-3">List of items:</p>
+            <ul>
+                <template x-for="item in dataArray" :key="item">
+                    <li>
+                        <span class="text-large" x-text="item"></span>
+                        <button class="bg-red-500 hover:bg-red-700 text-white text-xs py-0 px-2 rounded ml-2" @click="dataArray = dataArray.filter(i => i !== item)">Delete</button>
+                    </li>
+                </template>
+            </ul>
+        </div>
+
+        <!-- This is where you add a new item -->
+        <div class="mt-20">
+            <p class="text-xl border-b-2">Add a new item:</p>
+            <input type="text" x-model="newItem" class="border border-gray-400 p-2 rounded mt-3">
+            <button
+                    @click="
+                        dataArray.push(newItem);
+                        newItem = ''
+                    "
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >Add</button>
+        </div>
+
+        <!-- This is where you submit the data to the server -->
+        <div class="mt-20">
+            <button @click="submitDataToServer()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Submit to server</button>
+
+            <p class="text-sm mt-4">
+                Status:
+                <span x-show="lastServerSubmitSuccessful === null" class="text-black-50">
+                    Data has never been sent to server
+                </span>
+                <span x-show="lastServerSubmitSuccessful === true" class="text-green-600">
+                    ✅ Last data submit to server was successful
+                </span>
+                <span x-show="lastServerSubmitSuccessful === false" class="text-red-600">
+                    ❌ Last data submit to server was not successful, but don't worry all the data is still safe here - you can continue editing it and resubmit later
+                </span>
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    function myAlpineApp() {
+        return {
+            dataArray: [],
+            newItem: '',
+            lastServerSubmitSuccessful: null,
+            submitDataToServer() {
+                let url = '/submit';
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.dataArray)
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            this.lastServerSubmitSuccessful = true;
+                        } else {
+                            this.lastServerSubmitSuccessful = false;
+                        }
+                    })
+                    .catch(error => {
+                        this.lastServerSubmitSuccessful = false;
+                    });
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
